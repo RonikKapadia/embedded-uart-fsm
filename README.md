@@ -10,7 +10,7 @@
 
 This project implements a **complete UART communication system** on an FPGA development board using finite state machines (FSMs) in VHDL. The system demonstrates key digital design concepts including serial communication protocols, clock domain crossing via clock dividers, button debouncing, and FSM-based control logic.
 
-When a button is pressed, the system transmits a pre-stored message (the creator's NETID) character-by-character over UART to a host computer. The design showcases proper hardware interfacing with PMOD connectors and real-world signal conditioning.
+When a button is pressed, the system transmits a pre-stored message character-by-character over UART to a host computer. The design showcases proper hardware interfacing with PMOD connectors and real-world signal conditioning.
 
 ### ✨ Key Features
 
@@ -29,15 +29,15 @@ When a button is pressed, the system transmits a pre-stored message (the creator
 
 ### System Components
 
-| Module | Description |
-|--------|-------------|
-| [`top.vhd`](src/top.vhd) | Top-level entity connecting all modules and mapping PMOD signals |
-| [`sender.vhd`](src/sender.vhd) | FSM-based message sender — sequences through stored characters on button press |
-| [`uart.vhd`](src/uart.vhd) | UART top-level structural wrapper (connects TX + RX) |
-| [`uart_tx.vhd`](src/uart_tx.vhd) | UART transmitter FSM — idle, start, data, stop states |
-| [`uart_rx.vhd`](src/uart_rx.vhd) | UART receiver FSM — with majority-vote oversampling for noise immunity |
+| Module                               | Description                                                                         |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| [`top.vhd`](src/top.vhd)             | Top-level entity connecting all modules and mapping PMOD signals                    |
+| [`sender.vhd`](src/sender.vhd)       | FSM-based message sender — sequences through stored characters on button press      |
+| [`uart.vhd`](src/uart.vhd)           | UART top-level structural wrapper (connects TX + RX)                                |
+| [`uart_tx.vhd`](src/uart_tx.vhd)     | UART transmitter FSM — idle, start, data, stop states                               |
+| [`uart_rx.vhd`](src/uart_rx.vhd)     | UART receiver FSM — with majority-vote oversampling for noise immunity              |
 | [`clock_div.vhd`](src/clock_div.vhd) | Clock divider generating the UART enable tick from the 125 MHz/100 MHz system clock |
-| [`debounce.vhd`](src/debounce.vhd) | Button debouncer using a shift register and counter |
+| [`debounce.vhd`](src/debounce.vhd)   | Button debouncer using a shift register and counter                                 |
 
 ## 📊 Simulation & Verification
 
@@ -112,31 +112,31 @@ end if;
 
 ### Required Hardware
 
-| Component      | Details                                              |
-| ---------------| -----------------------------------------------------|
-| **FPGA Board** | Digilent Zybo Z7 or equivalent Zynq-7000 board       |
-| **USB-UART**   | PMOD UART module or onboard USB-UART bridge          |
+| Component           | Details                                         |
+| ------------------- | ----------------------------------------------- |
+| **FPGA Board**      | Digilent Zybo Z7 or equivalent Zynq-7000 board  |
+| **USB-UART**        | PMOD UART module or onboard USB-UART bridge     |
 | **Serial Terminal** | PuTTY, Tera Term, or similar (115200 baud, 8N1) |
 
 ### PMOD Pin Mapping (via constraints.xdc)
 
 All UART signals are routed to **PMOD Header JA** for easy connection to a USB-UART bridge:
 
-| Signal | Pin | Direction | Description          |
-|--------|-----|-----------|----------------------|
-| `RTS`  | N15 | Output    | Request to Send      |
+| Signal | Pin | Direction | Description               |
+| ------ | --- | --------- | ------------------------- |
+| `RTS`  | N15 | Output    | Request to Send           |
 | `RXD`  | L14 | Output    | UART Transmit (FPGA → PC) |
 | `TXD`  | K16 | Input     | UART Receive  (PC → FPGA) |
-| `CTS`  | K14 | Output    | Clear to Send        |
+| `CTS`  | K14 | Output    | Clear to Send             |
 
 > **Note:** `RXD`/`TXD` naming in the constraint file matches the PMOD bridge perspective: `RXD` is what the PC receives from the FPGA.
 
 ### Button Mapping
 
-| Button | Pin | Function                |
-|--------|-----|-------------------------|
-| `btn[0]` | R18 | Reset (active high)     |
-| `btn[1]` | P16 | Send next character     |
+| Button   | Pin | Function            |
+| -------- | --- | ------------------- |
+| `btn[0]` | R18 | Reset (active high) |
+| `btn[1]` | P16 | Send next character |
 
 ### Clock Constraint
 
